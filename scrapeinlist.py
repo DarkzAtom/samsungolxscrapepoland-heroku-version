@@ -27,7 +27,7 @@ def insidelist(url):
             negocjacja = element.get_text()  #pasuje
             break
         else:
-            negocjacja = ''
+            negocjacja = 'blablabla'
 
 
 
