@@ -83,12 +83,12 @@ async def scrape_update():
             if item['image']:
                 # There are images to send
                  # Limit to 10 images
-                text = f"Название объявления: {item['Nazwa']}\nЦена: {item['Cena']}\nСтатус о торге: {item['Negocjacja']}\nОтправка почтой: {item['Wysylka']}\nГород продавца: {item['Miasto']}\nОписание: {item['Opis']}\nПамять устройства: {item['Pamiec']}\nСостояние: {item['Stan']}\nСсылка: {item['Url']}"
+                text = f"Название объявления: {item['Nazwa']}\nЦена: {item['Cena']}\nСтатус о торге: {item['Negocjacja']}\nОтправка почтой: {item['Wysylka']}\nГород продавца: {item['Miasto']}\nПамять устройства: {item['Pamiec']}\nСостояние: {item['Stan']}\nСсылка: {item['Url']}\nОписание: {item['Opis']}"
                 media_group = []
 
                 for num, url in enumerate(item['image'][:9]):
                     if num == 0:
-                        media_group.append(InputMediaPhoto(media=url, caption=text))
+                        media_group.append(InputMediaPhoto(media=url, caption=text[:1024]))
                     else:
                         media_group.append(InputMediaPhoto(media=url))
                 # Send the media group
@@ -97,7 +97,7 @@ async def scrape_update():
                     scheduler.start()
             else:
                 # No images available, send a text message instead
-                message_text = f"Название объявления: {item['Nazwa']}\nЦена: {item['Cena']}\nСтатус о торге: {item['Negocjacja']}\nОтправка почтой: {item['Wysylka']}\nГород продавца: {item['Miasto']}\nОписание: {item['Opis']}\nПамять устройства: {item['Pamiec']}\nСостояние: {item['Stan']}\nСсылка: {item['Url']}\n"
+                message_text = f"Название объявления: {item['Nazwa']}\nЦена: {item['Cena']}\nСтатус о торге: {item['Negocjacja']}\nОтправка почтой: {item['Wysylka']}\nГород продавца: {item['Miasto']}\nПамять устройства: {item['Pamiec']}\nСостояние: {item['Stan']}\nСсылка: {item['Url']}\nОписание: {item['Opis']}"
                 await bot.send_message(chat_id=user_id, text=message_text)
                 if scheduler.state is not STATE_RUNNING:
                     scheduler.start()

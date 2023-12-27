@@ -3,12 +3,18 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 import time
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+
 def insidelist(url):
-    driver = webdriver.Chrome()
+
+    options = ChromeOptions()
+    options.add_argument("--headless=new")
+    driver = webdriver.Chrome(options=options)
     driver.get(url)
     time.sleep(5)
 
     html = driver.page_source
+    driver.quit()
 
     soup = BeautifulSoup(html, 'html.parser')
 
