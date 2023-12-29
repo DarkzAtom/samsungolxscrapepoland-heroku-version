@@ -5,14 +5,22 @@ from selenium import webdriver
 import time
 from scrapeinlist import insidelist
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-
+import os
 
 def scrapesite():
     url = "https://www.olx.pl/elektronika/telefony/smartfony-telefony-komorkowe/q-samsung-s22-ultra/?search%5Border%5D=created_at:desc&search%5Bfilter_float_price:to%5D=2000#842998970"
     #heardersvar = {'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
     options = ChromeOptions()
+
+
+    options.binary_location = os.environ.get("GOOGLE-CHROME-BIN")
     options.add_argument("--headless=new")
-    driver = webdriver.Chrome(options=options)
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
+
+
     driver.get(url)
     time.sleep(5)
 

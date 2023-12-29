@@ -4,15 +4,17 @@ import requests
 from selenium import webdriver
 import time
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+import os
 
 def insidelist(url):
 
     options = ChromeOptions()
+    options.binary_location = os.environ.get("GOOGLE-CHROME-BIN")
     options.add_argument("--headless=new")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
     driver.get(url)
     time.sleep(5)
 
