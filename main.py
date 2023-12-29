@@ -107,7 +107,7 @@ async def scrape_update():
     # Do not break the loop to continue attempting updates for other users
 
 
-scheduler = AsyncIOScheduler(event_loop=asyncio.get_event_loop())
+scheduler = AsyncIOScheduler()
 scheduler.add_job(scrape_update, 'interval', minutes=1)
 
 
@@ -127,7 +127,7 @@ def main() -> None:
     # Start the bot and run it until it's stopped
     application.run_polling(timeout=0.5)  # Или укажите другой интервал опроса
 
-    asyncio.get_event_loop().run_forever()
+
 
 # Ensure that the script is being run directly and not imported as a module
 if __name__ == '__main__':
