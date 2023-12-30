@@ -6,6 +6,10 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.schedulers.base import STATE_RUNNING, STATE_PAUSED, STATE_STOPPED
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InputMediaPhoto
+import psycopg2
+import os
+import datetime
+import time
 
 nachat = ReplyKeyboardMarkup(
     [
@@ -31,6 +35,37 @@ domoj = ReplyKeyboardMarkup(
 TOKEN = '6662020357:AAGHifJH4tcGgFvpkZif7BUn9TsZGbaMXXs'
 bot = Bot(token=TOKEN)
 user_id = None
+
+def start_scraping():
+    # Запуск скрейпинга
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    cur = conn.cursor()
+    cur.execute("INSERT INTO scraping_status (status, start_time) VALUES (%s, %s);", (True, datetime.now()))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+def check_scraping_status():
+    # Проверка состояния скрейпинга
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    cur = conn.cursor()
+    cur.execute("SELECT status FROM scraping_status ORDER BY id DESC LIMIT 1;")
+    status = cur.fetchone()[0] if cur.fetchone() else False
+    cur.close()
+    conn.close()
+    return status
+
+
+def stop_scraping():
+    # Остановка скрейпинга
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    cur = conn.cursor()
+    cur.execute("UPDATE scraping_status SET status = %s, end_time = %s WHERE id = (SELECT MAX(id) FROM scraping_status);", (False, datetime.now()))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
 async def start(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text('Добро пожаловать домой, мой пират. Жаждешь легкой наживы? No to prosze Pana, нажимай на меня скорее и вперед в бой!', reply_markup=nachat)
     if user_id in user_states:
@@ -41,12 +76,14 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     if text == "Приостановить":
         await start(update, context)
         context.user_data.pop('state', None)
+        stop_scraping()
         if scheduler.state is STATE_RUNNING:
             scheduler.shutdown()
             context.user_data.pop('scheduler', None)
 
     elif text == "Начать":
         await scrape(update, context)
+        start_scraping()
 
 
 
@@ -119,6 +156,9 @@ def main() -> None:
     # Create an Application instance with your bot token
     application = Application.builder().token(TOKEN).build()
 
+    if check_scraping_status():
+        if scheduler.state is not STATE_RUNNING:
+            scheduler.start()
     # Add a CommandHandler for the /start command and link it to the start function
     application.add_handler(CommandHandler('start', start))
     application.add_handler(MessageHandler(filters=(filters.TEXT & ~filters.COMMAND), callback=handle_message))
