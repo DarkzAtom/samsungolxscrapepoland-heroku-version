@@ -8,7 +8,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import InputMediaPhoto
 import psycopg2
 import os
-import datetime
+from datetime import datetime
 import time
 
 nachat = ReplyKeyboardMarkup(
