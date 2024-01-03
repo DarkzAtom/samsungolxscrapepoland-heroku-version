@@ -50,7 +50,8 @@ def check_scraping_status():
     conn = psycopg2.connect(os.environ['DATABASE_URL'])
     cur = conn.cursor()
     cur.execute("SELECT status FROM scraping_status ORDER BY id DESC LIMIT 1;")
-    status = cur.fetchone()[0] if cur.fetchone() else False
+    fetch_result = cur.fetchone()
+    status = fetch_result[0] if fetch_result else False
     cur.close()
     conn.close()
     return status
