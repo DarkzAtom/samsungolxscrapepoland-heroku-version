@@ -58,8 +58,8 @@ def insidelist(url):
             stan = ''
 
 
-    image_section = soup.select_one('div.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden')
-    image_class = image_section.select('img') # NIE PASUJE SPRW
+    image_section = soup.select_one('div.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden') if soup.select_one('div.swiper.swiper-initialized.swiper-horizontal.swiper-backface-hidden') is not None else 'None'
+    image_class = image_section.select('img') if image_section.select('img') is not None else 'None'
     image_list = []
 
     for image in image_class:
