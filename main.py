@@ -153,7 +153,7 @@ scheduler.add_job(scrape_update, 'interval', minutes=1)
 
 
 
-def main() -> None:
+async def main() -> None:
     # Create an Application instance with your bot token
     application = Application.builder().token(TOKEN).build()
 
