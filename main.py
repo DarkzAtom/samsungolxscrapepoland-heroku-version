@@ -172,4 +172,4 @@ def main():
 
 # Ensure that the script is being run directly and not imported as a module
 if __name__ == '__main__':
-    asyncio.run(main())
+    main()
