@@ -153,7 +153,7 @@ scheduler.add_job(scrape_update, 'interval', minutes=1)
 
 
 
-def main():
+def main() -> None:
     # Create an Application instance with your bot token
     application = Application.builder().token(TOKEN).build()
 
@@ -172,4 +172,4 @@ def main():
 
 # Ensure that the script is being run directly and not imported as a module
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
